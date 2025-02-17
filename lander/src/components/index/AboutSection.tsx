@@ -45,7 +45,7 @@ export default function AboutSection() {
             their goals while Allinix handles the complexities.
           </motion.p>
 
-          <Link href={"/signin"}>
+          <a href="https://dashboard.allinix.ai">
             <motion.button
               initial={{ y: -35, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
@@ -55,7 +55,7 @@ export default function AboutSection() {
             >
               Get Access to Allinix
             </motion.button>
-          </Link>
+          </a>
         </div>
 
         <motion.div

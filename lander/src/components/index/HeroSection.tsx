@@ -99,7 +99,7 @@ export default function HeroSection() {
             viewport={{ once: true }}
             className="btn-primary rounded-xl px-6 py-2.5 font-serif text-2xl text-white"
           >
-            <Link href="/signin">Get Access to Allinix</Link>
+            <a href="https://dashboard.allinix.ai">Get Access to Allinix</a>
           </motion.button>
         </div>
       </Vortex>
