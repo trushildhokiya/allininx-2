@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -8,12 +8,14 @@ const signin: React.FC = () => {
   const router = useRouter();
   const { login, authenticated, ready } = usePrivy();
 
-  const handleAccess = () => {
-    if (authenticated) {
+  useEffect(() => {
+    if (ready && authenticated) {
       router.push("/chat");
-    } else {
-      login();
     }
+  }, [authenticated, ready, router]);
+
+  const handleAccess = () => {
+    login();
   };
 
   return (
