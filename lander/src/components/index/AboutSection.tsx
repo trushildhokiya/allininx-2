@@ -4,7 +4,6 @@ import logoImg from "./assets/images/brand/logo.png";
 import img1 from "./assets/images/about-section-1.png";
 import { motion } from "motion/react";
 import { Ripple } from "./magicui/ripple";
-import Link from "next/link";
 
 export default function AboutSection() {
   return (
