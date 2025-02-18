@@ -15,6 +15,15 @@ img {
     pointer-events: none;
 }
 
+@keyframes loading {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(200%);
+    }
+}
+
 .gradient-text {
     background: linear-gradient(180deg, #fff 0%, #525252 100%);
     background-clip: text;

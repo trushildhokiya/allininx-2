@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -7,12 +7,19 @@ import { usePrivy } from "@privy-io/react-auth";
 const signin: React.FC = () => {
   const router = useRouter();
   const { login, authenticated, ready } = usePrivy();
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (ready && authenticated) {
-      router.push("/chat");
+      setIsLoading(true);
+      // Add a small delay to ensure smooth transition
+      const redirectTimer = setTimeout(() => {
+        router.push("/chat");
+      }, 2000);
+      
+      return () => clearTimeout(redirectTimer);
     }
-  }, [authenticated, ready, router]);
+  }, [authenticated, router]);
 
   const handleAccess = () => {
     login();
@@ -30,12 +37,22 @@ const signin: React.FC = () => {
           </div>
           <h1 className="text-xl font-bold text-white">Welcome to Allinix</h1>
           <p className="mb-8 text-gray-400">Get access to dashboard</p>
-          <button
-            onClick={handleAccess}
-            className="btn-primary w-full rounded-md px-4 py-2 font-semibold text-white"
-          >
-            SIGN IN
-          </button>
+          {isLoading ? (
+            <div className="w-full space-y-3">
+              <div className="h-1 w-full overflow-hidden rounded-full bg-gray-700">
+                <div className="h-full w-1/2 animate-[loading_1s_ease-in-out_infinite] bg-blue-500"></div>
+              </div>
+              <p className="text-sm text-gray-400">Redirecting to dashboard...</p>
+            </div>
+          ) : (
+            <button
+              onClick={handleAccess}
+              className="btn-primary w-full rounded-md px-4 py-2 font-semibold text-white"
+              disabled={isLoading}
+            >
+              SIGN IN
+            </button>
+          )}
           <div className="mt-8 flex justify-center gap-8">
             <Link
               href={"https://x.com/allinix_ai"}
