@@ -7,7 +7,6 @@ import {
   animate,
 } from "framer-motion";
 import { Vortex } from "./ui/vortex";
-import Link from "next/link";
 import axios from "axios";
 
 const COLORS_TOP = ["rgba(255,255,255,0.25)"];
