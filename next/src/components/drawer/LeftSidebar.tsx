@@ -2,7 +2,7 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { useTranslation } from "next-i18next";
 import { FaBars } from "react-icons/fa";
-
+import { useState, useEffect } from 'react';
 import { DrawerItemButton, DrawerItemButtonLoader } from "./DrawerItemButton";
 import type { DisplayProps } from "./Sidebar";
 import Sidebar from "./Sidebar";
@@ -21,145 +21,155 @@ const LeftSidebar = ({ show, setShow, onReload }: DisplayProps & { onReload?: ()
   const router = useRouter();
   const { signIn, status } = useAuth();
   const [t] = useTranslation("drawer");
+  const [isPageLoading, setIsPageLoading] = useState(false);
 
   const { isLoading, data } = api.agent.getAll.useQuery(undefined, {
     enabled: status === "authenticated",
   });
   const userAgents = data ?? [];
 
+  useEffect(() => {
+    const handleStart = (url: string) => {
+      if (PAGE_LINKS.some(link => link.href === url)) {
+        setIsPageLoading(true);
+      }
+    };
+
+    const handleComplete = () => {
+      setIsPageLoading(false);
+    };
+
+    router.events.on('routeChangeStart', handleStart);
+    router.events.on('routeChangeComplete', handleComplete);
+    router.events.on('routeChangeError', handleComplete);
+
+    return () => {
+      router.events.off('routeChangeStart', handleStart);
+      router.events.off('routeChangeComplete', handleComplete);
+      router.events.off('routeChangeError', handleComplete);
+    };
+  }, [router]);
+
   const navigateToPage = (href: string) => {
     if (router.pathname === href) {
       onReload?.();
       return;
     }
-
     void router.push(href);
   };
 
   return (
-    <Sidebar show={show} setShow={setShow} side="left" className="border-2 bg-black border-gray-800">
-      <div className="flex flex-row items-center pb-6">
-        <Link href="/" className="flex cursor-pointer items-center">
-          <Image src="/allinix-logo.png" width="42" height="42" alt="Reworkd AI" />
-          <p className="text-xl">Allinix</p>
-        </Link>
+    <>
+      {isPageLoading && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="relative space-y-3 text-center">
+            <div className="h-1.5 w-32 overflow-hidden rounded-full bg-gray-800">
+              <div className="absolute inset-0">
+                <div 
+                  className="h-full w-1/3 bg-blue-500"
+                  style={{
+                    animation: 'loadingN 1.5s infinite ease-in-out',
+                    transform: 'translateX(-100%)'
+                  }}
+                ></div>
+              </div>
+            </div>
+            <p className="text-sm font-medium text-white/90">Loading...</p>
+          </div>
+        </div>
+      )}
+      
+      <Sidebar show={show} setShow={setShow} side="left" className="border-2 bg-black border-gray-800">
+        <div className="flex flex-row items-center pb-6">
+          <Link href="/" className="flex cursor-pointer items-center">
+            <Image src="/allinix-logo.png" width="42" height="42" alt="Reworkd AI" />
+            <p className="text-xl">Allinix</p>
+          </Link>
 
-        <button
-          className="btn-primary-orange ml-auto flex rounded-md border-none bg-orange-500/50 p-2 text-orange-500 transition-all"
-          onClick={() => navigateToPage("/chat")}
-        >
-        
-          <SquarePlus className="mr-2" /> New Agent
-        </button>
-        <button
-          className="ml-auto rounded-md border-none  hover:scale-110 transition-all duration-150"
-          onClick={() => setShow(!show)}
-        >
-          <FaX size="18" className="z-20 text-white-" />
-        </button>
-      </div>
-      <div className="mb-2 mr-2 flex-1 overflow-y-auto overflow-x-hidden overflow-ellipsis">
-        {/* {status === "unauthenticated" && (
-          <div className="p-1 text-sm text-slate-12">
-            <a className="link" onClick={() => void signIn()}>
-              {t("SIGN_IN")}
-            </a>{" "}
-            {t("SIGN_IN_NOTICE")}
-          </div>
-        )}
-        {status === "authenticated" && !isLoading && userAgents.length === 0 && (
-          <div className="p-1 text-sm text-white">
-            {t("NEED_TO_SIGN_IN_AND_CREATE_AGENT_FIRST")}
-          </div>
-        )} */}
-        {/* {(status === "loading" || (status === "authenticated" && isLoading)) && (
-          <div className="flex flex-col gap-2 overflow-hidden">
-            {Array(13)
-              .fill(0)
-              .map((_, index) => (
-                <DrawerItemButtonLoader key={index} />
+          <button
+            className="btn-primary-orange ml-auto flex rounded-md border-none bg-orange-500/50 p-2 text-orange-500 transition-all"
+            onClick={() => navigateToPage("/chat")}
+          >
+            <SquarePlus className="mr-2" /> New Agent
+          </button>
+          <button
+            className="ml-auto rounded-md border-none hover:scale-110 transition-all duration-150"
+            onClick={() => setShow(!show)}
+          >
+            <FaX size="18" className="z-20 text-white" />
+          </button>
+        </div>
+
+        <div className="mb-2 mr-2 flex-1 overflow-y-auto overflow-x-hidden overflow-ellipsis">
+          <p className="my-5 text-3xl font-semibold text-white">Welcome Back to Allinix</p>
+          <p className="text-sm">Valid member of Allinix since Jan 2025</p>
+
+          <ul role="list" className="flex flex-col">
+            <ul className="mb-2">
+              <div className="mb-2 ml-2 text-base my-4 font-semibold text-slate-10">Menu</div>
+              {PAGE_LINKS.map((link, i) => (
+                <LinkItem
+                  key={i}
+                  title={link.name}
+                  href={link.href}
+                  onClick={() => navigateToPage(link.href)}
+                >
+                  <link.icon className={link.className} />
+                </LinkItem>
               ))}
-          </div>
-        )} */}
+            </ul>
+          </ul>
 
-        <p className="my-5 text-3xl font-semibold text-white">Welcome Back to Allinix</p>
-        <p className="text-sm">Valid member of Allinix since Jan 2025</p>
-
-        {/* <button className="px-3 py-2 btn-primary-teal text-teal-500 bg-teal-600/50 flex w-full text-center justify-center rounded-lg my-4">
-          <Rocket className="mr-2 fill-teal-500" /> Subscribe
-        </button> */}
+          <h3 className="mb-2 ml-2 text-base my-4 font-semibold text-slate-10">Conversations</h3>
+          {userAgents.map((agent, index) => (
+            <DrawerItemButton
+              key={`${index}-${agent.name}`}
+              className="flex w-full rounded-md p-2 text-sm font-semibold text-white"
+              text={agent.name}
+              onClick={() => void router.push(`/agent?id=${agent.id}`)}
+            />
+          ))}
+        </div>
 
         <ul role="list" className="flex flex-col">
-          <ul className="mb-2">
-            <div className="mb-2 ml-2 text-base my-4 font-semibold text-slate-10">Menu</div>
-            {PAGE_LINKS.map((link, i) => (
-              <LinkItem
-                key={i}
-                title={link.name}
-                href={link.href}
-                onClick={() => navigateToPage(link.href)}
-              >
-                <link.icon className={link.className} />
-              </LinkItem>
-            ))}
-          </ul>
-        </ul>
-
-        <h3 className="mb-2 ml-2 text-base my-4 font-semibold text-slate-10">Conversations</h3>
-        {userAgents.map((agent, index) => (
-          <DrawerItemButton
-            key={`${index}-${agent.name}`}
-            className="flex w-full rounded-md p-2 text-sm font-semibold text-white"
-            text={agent.name}
-            onClick={() => void router.push(`/agent?id=${agent.id}`)}
-          />
-        ))}
-      </div>
-      <ul role="list" className="flex flex-col">
-        <li className="mb-2">
-          <div className="mx-2 flex items-center justify-center gap-3">
-            {SOCIAL_LINKS.map((link) => (
-              <motion.div
-                whileHover={{ scale: 1.2, opacity: 0.9 }}
-                whileTap={{ scale: 0.9 }}
-                transition={{ type: "spring", stiffness: 300, damping: 15 }}
-              >
-                <LinkIconItem
+          <li className="mb-2">
+            <div className="mx-2 flex items-center justify-center gap-3">
+              {SOCIAL_LINKS.map((link) => (
+                <motion.div
                   key={link.name}
-                  href={link.href}
-                  onClick={() => {
-                    void router.push(link.href);
-                  }}
+                  whileHover={{ scale: 1.2, opacity: 0.9 }}
+                  whileTap={{ scale: 0.9 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 15 }}
                 >
-                  {link.icon instanceof Object ? (
-                    <link.icon size={20} className="" />
-                  ) : (
-                    <Image
-                      src={link.icon}
-                      width={link.width}
-                      height={link.height}
-                      className=""
-                      alt="image"
-                    />
-                  )}
-                </LinkIconItem>
-              </motion.div>
-            ))}
-          </div>
-        </li>
-        <li>
-          <div className="mb-2 ml-2 text-xs font-semibold text-slate-10"></div>
-        </li>
-        <li>
-          <div className="mb-2 ml-2  text-center text-xs font-semibold text-slate-10">
-            @{new Date().getFullYear()} Allinix.ai | All Rights reserved
-          </div>
-        </li>
-        {/* <li>
-          <AuthItem session={session} signOut={signOut} signIn={signIn} />
-        </li> */}
-      </ul>
-    </Sidebar>
+                  <LinkIconItem
+                    href={link.href}
+                    onClick={() => {
+                      void router.push(link.href);
+                    }}
+                  >
+                    {link.icon instanceof Object ? (
+                      <link.icon size={20} />
+                    ) : (
+                      <Image
+                        src={link.icon}
+                        width={link.width}
+                        height={link.height}
+                        alt="icon"
+                      />
+                    )}
+                  </LinkIconItem>
+                </motion.div>
+              ))}
+            </div>
+          </li>
+          <li>
+            <div className="mb-2 ml-2  text-center text-xs font-semibold text-slate-10">
+              @{new Date().getFullYear()} Allinix.ai | All Rights reserved
+            </div>
+          </li>
+        </ul>
+      </Sidebar>
+    </>
   );
 };
 
