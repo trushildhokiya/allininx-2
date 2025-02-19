@@ -73,7 +73,7 @@ const signin: React.FC = () => {
               </svg>
             </Link>
             <Link
-              href={"https://docs.allinix.ai/"}
+              href={"https://allinix-ai.gitbook.io/allinix"}
               target="_blank"
               className="h-8 w-8 duration-300 hover:scale-110"
             >
