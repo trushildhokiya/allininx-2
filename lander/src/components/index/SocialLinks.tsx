@@ -39,7 +39,7 @@ export default function SocialLinks() {
         whileTap={{ scale: 0.9 }}
         transition={{ type: "spring", stiffness: 300, damping: 15 }}
       >
-        <Link href={"https://github.com/Allinix-Labs/Allinix"} target="_blank" className="flex">
+        <Link href={"https://github.com/Allinix-ai/Allinix-app"} target="_blank" className="flex">
           <svg
             width="29"
             height="29"
@@ -69,7 +69,7 @@ export default function SocialLinks() {
         whileTap={{ scale: 0.9 }}
         transition={{ type: "spring", stiffness: 300, damping: 15 }}
       >
-        <Link href={"https://docs.allinix.ai/"} className="flex">
+        <Link href={"https://allinix-ai.gitbook.io/allinix"} className="flex">
           <img src="/gitbook.png" width={28} height={28} />
         </Link>
       </motion.div>

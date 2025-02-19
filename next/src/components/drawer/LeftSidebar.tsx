@@ -61,20 +61,40 @@ const LeftSidebar = ({ show, setShow, onReload }: DisplayProps & { onReload?: ()
   return (
     <>
       {isPageLoading && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="relative space-y-3 text-center">
-            <div className="h-1.5 w-32 overflow-hidden rounded-full bg-gray-800">
-              <div className="absolute inset-0">
-                <div 
-                  className="h-full w-1/3 bg-blue-500"
-                  style={{
-                    animation: 'loadingN 1.5s infinite ease-in-out',
-                    transform: 'translateX(-100%)'
-                  }}
-                ></div>
-              </div>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
+          <div className="flex flex-col items-center space-y-4">
+            <style jsx global>{`
+              @keyframes loadingBar {
+                0% {
+                  transform: translateX(-100%);
+                }
+                100% {
+                  transform: translateX(100%);
+                }
+              }
+              
+              @keyframes pulse {
+                0%, 100% {
+                  opacity: 1;
+                }
+                50% {
+                  opacity: 0.5;
+                }
+              }
+              
+              .loading-bar {
+                animation: loadingBar 1.5s infinite ease-in-out;
+              }
+              
+              .pulse-text {
+                animation: pulse 1.5s infinite ease-in-out;
+              }
+            `}</style>
+            
+            <div className="h-1 w-32 overflow-hidden rounded-full bg-gray-800/60">
+              <div className="loading-bar h-full w-full bg-gradient-to-r from-orange-500/80 via-orange-400 to-orange-500/80"></div>
             </div>
-            <p className="text-sm font-medium text-white/90">Loading...</p>
+            <p className="pulse-text text-sm font-medium text-orange-500/90">Loading...</p>
           </div>
         </div>
       )}
@@ -163,7 +183,7 @@ const LeftSidebar = ({ show, setShow, onReload }: DisplayProps & { onReload?: ()
             </div>
           </li>
           <li>
-            <div className="mb-2 ml-2  text-center text-xs font-semibold text-slate-10">
+            <div className="mb-2 ml-2 text-center text-xs font-semibold text-slate-10">
               @{new Date().getFullYear()} Allinix.ai | All Rights reserved
             </div>
           </li>

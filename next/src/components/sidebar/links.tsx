@@ -38,7 +38,7 @@ export const PAGE_LINKS: LinkMetadata[] = [
 export const SOCIAL_LINKS: LinkMetadata[] = [
   {
     name: "Github",
-    href: "https://github.com/Allinix-Labs/Allinix",
+    href: "https://github.com/Allinix-ai/Allinix-app",
     icon: FaGithub,
   },
   // {
@@ -50,7 +50,7 @@ export const SOCIAL_LINKS: LinkMetadata[] = [
   // },
   {
     name: "gitbook",
-    href: "https://docs.allinix.ai/",
+    href: "https://allinix-ai.gitbook.io/allinix",
     icon: "/gitbook.png",
     width:28,
     height:28
